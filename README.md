@@ -9,9 +9,9 @@
 - Skopiuj `.env.example` do `.env` i zmień dane do bazy na następujące
     - `DB_CONNECTION=sqlite`
     - resztę `DB_...` można usunąć
+    - Na potrzebę ustalonych już kodów Authenticator `APP_KEY=base64:reAmzW5F9ZByxNRaNpOzTUfs25IT8CfODA86qcc80Iw=` 
     - Ewentualnie skonfiguruj własny serwer np. MySQL
 - Uruchom polecenie `composer install`
-- Uruchom polecenie `php artisan key:generate`
 - Uruchom polecenie `php artisan migrate --seed` (do bazy dodani zostaną uzytkownicy i posty, seedowanie postów może trochę potrwać...)
 - Uruchom polecenie `sudo php artisan serve --port=80` i wpisz w przeglądarce `localhost`
 
