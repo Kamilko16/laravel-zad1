@@ -20,7 +20,7 @@
     <div class="container-fluid overflow-auto">
         <div class="container">
             <h1 class="mt-3 mb-3">Two Factory Authentication</h1>
-            @if (session('status') == 'two-factor-authentication-enabled')
+            @if (session('status') == 'two-factor-authentication-enabled' || (!auth()->user()->two_factor_confirmed_at && auth()->user()->two_factor_secret))
                 <div class="alert alert-secondary" role="alert">
                     Please finish configuring two factor authentication below.
                 </div>
@@ -30,9 +30,7 @@
                     Wrong code.
                 </div>
             @endif
-            @if (session('status') == 'two-factor-authentication-enabled' ||
-                    sizeof($errors->getBag('confirmTwoFactorAuthentication')->get('code')) == 1)
-
+            @if (!auth()->user()->two_factor_confirmed_at && auth()->user()->two_factor_secret)
                 <h2 class="mt-2 mb-2">QR code:</h2>
                 {!! auth()->user()->twoFactorQrCodeSvg() !!}
                 <h2 class="mt-2 mb-2">Manual add code:</h2>
@@ -66,20 +64,18 @@
                     2FA was succesfully disabled.
                 </div>
             @endif
-            @if (sizeof($errors->getBag('confirmTwoFactorAuthentication')->get('code')) == 0 && session('status') != 'two-factor-authentication-enabled')
-                @if (auth()->user()->two_factor_secret)
-                    <form action="/user/two-factor-authentication" method="post">
-                        @csrf
-                        @method('delete')
-                        <button type="submit" class="btn btn-danger">Disable 2FA</button>
-                    </form>
-                @else
-                    <form action="/user/two-factor-authentication" method="post">
-                        @csrf
+            @if (auth()->user()->two_factor_secret && auth()->user()->two_factor_confirmed_at)
+                <form action="/user/two-factor-authentication" method="post">
+                    @csrf
+                    @method('delete')
+                    <button type="submit" class="btn btn-danger">Disable 2FA</button>
+                </form>
+            @elseif(!auth()->user()->two_factor_secret && !auth()->user()->two_factor_confirmed_at)
+                <form action="/user/two-factor-authentication" method="post">
+                    @csrf
 
-                        <button type="submit" class="btn btn-primary">Enable 2FA</button>
-                    </form>
-                @endif
+                    <button type="submit" class="btn btn-primary">Enable 2FA</button>
+                </form>
             @endif
         </div>
     </div>

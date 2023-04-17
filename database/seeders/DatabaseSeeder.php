@@ -23,7 +23,8 @@ class DatabaseSeeder extends Seeder
             'email' => 'test1@example.com',
             'password' => Hash::make('test1'),
             'two_factor_secret' => $code,
-            'two_factor_recovery_codes' => $recovery
+            'two_factor_recovery_codes' => $recovery,
+            'two_factor_confirmed_at' => time()
         ]);
 
         \App\Models\User::factory()->create([
@@ -31,7 +32,8 @@ class DatabaseSeeder extends Seeder
             'email' => 'test2@example.com',
             'password' => Hash::make('test2'),
             'two_factor_secret' => $code,
-            'two_factor_recovery_codes' => $recovery
+            'two_factor_recovery_codes' => $recovery,
+            'two_factor_confirmed_at' => time()
         ]);
 
         // test3 bez 2FA, żeby mogli zalogować się tylko test1, test2, admin z 2FA
@@ -46,7 +48,8 @@ class DatabaseSeeder extends Seeder
             'email' => 'admin@example.com',
             'password' => Hash::make('admin'),
             'two_factor_secret' => $code,
-            'two_factor_recovery_codes' => $recovery
+            'two_factor_recovery_codes' => $recovery,
+            'two_factor_confirmed_at' => time()
         ]);
 
         // 100K randomowych postów
