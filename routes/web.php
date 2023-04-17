@@ -21,14 +21,23 @@ function logout($request)
     $request->session()->invalidate();
 }
 
+
 Route::middleware(['auth'])->group(function () {
     Route::get('/', function (Request $request) {
-        if (Auth::user()->two_factor_secret) {
-            return view('home');
-        } else {
-            logout($request);
-            return redirect('/login')->with('message', 'You can\' log in');
+
+        if(env('2FA_LOCK', true)) {
+            if (Auth::user()->two_factor_secret) {
+                return view('home');
+            } else {
+                logout($request);
+                return redirect('/login')->with('message', 'You can\'t log in');
+            }
         }
+        else
+        {
+            return view('home'); 
+        }
+
     });
 
     Route::get('/settings', function () {

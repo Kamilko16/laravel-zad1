@@ -1,5 +1,10 @@
-{{-- Paginacja, żebye nie ładować 100k postów na raz, ewentualnie można zrobic lazy loading przy scrollowaniu z użyciem js --}}
-{{ $posts = DB::table('posts')->paginate(20) }}
+<?php
+$posts = DB::table('posts')
+    ->join('users', 'users.id', '=', 'posts.user_id')
+    ->select('posts.id', 'posts.title', 'posts.created', 'users.name')
+    ->orderBy('posts.id', 'asc')
+    ->paginate(20);
+?>
 <html>
 
 <head>
@@ -17,26 +22,35 @@
     </script>
 </head>
 
-<body>
-    <h1>Witaj - {{ Auth::user()->name }}</h1>
-    <a href="/settings">Settings</a>
-    <a href="/logout">Logout</a>
-    <table>
-        <tr>
-            <td>id</td>
-            <td>title</td>
-            <td>date</td>
-            <td>author</td>
-        </tr>
-        @foreach ($posts as $post)
-            <tr>
-                <td>{{ $post->id }}</td>
-                <td>{{ $post->title }}</td>
-                <td>{{ $post->created }}</td>
-                <td>{{ $post->user_id }}</td>
-            </tr>
-        @endforeach
-    </table>
+<body class="d-flex flex-column h-100">
+    <x-nav-bar />
+    <div class="container-fluid overflow-auto">
+        <div class="container">
+            <h1 class="mt-3 mb-3">Witaj - {{ Auth::user()->name }}</h1>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Title</th>
+                        <th>Date</th>
+                        <th>Author</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($posts as $post)
+                        <tr>
+                            <th>{{ $post->id }}</th>
+                            <td>{{ $post->title }}</td>
+                            <td>{{ $post->created }}</td>
+                            <td>{{ $post->name }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+            {{-- Paginacja, żebye nie ładować 100k postów na raz, ewentualnie można zrobic lazy loading przy scrollowaniu z użyciem js --}}
+            {{ $posts->links() }}
+        </div>
+    </div>
 </body>
 
 </html>
