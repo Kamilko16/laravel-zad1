@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
+use App\Http\Controllers\PostController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,46 +16,40 @@ use Illuminate\Http\Request;
 |
 */
 
-function logout($request)
-{
-    Auth::logout();
-    $request->session()->invalidate();
-}
+Route::group(['middleware' => 'auth'], function () {
 
-
-Route::middleware(['auth'])->group(function () {
-    Route::get('/', function (Request $request) {
-
-        if(env('2FA_LOCK', true)) {
-            if (Auth::user()->two_factor_secret) {
-                return view('home');
-            } else {
-                logout($request);
-                return redirect('/login')->with('message', 'You can\'t log in');
-            }
-        }
-        else
-        {
-            return view('home'); 
-        }
-
-    });
+    Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
 
     Route::get('/settings', function () {
         return view('auth.settings');
-    });
+    })->name('settings');
 });
+
+Route::get('/', function() {
+    if(Auth::check()) {
+        return redirect(route('posts.index'));
+    }
+    else
+    {
+        
+        return redirect(route('login'));
+    }
+})->name('home');
 
 Route::get('/login', function () {
     if (Auth::check()) {
-        return redirect('/');
+        return redirect(route('home'));
     } else {
         return view('auth.login');
     }
 })->name('login');
 
 Route::get('/logout', function (Request $request) {
-
-    logout($request);
-    return redirect('/login')->with('message', 'You have been logged out.');
+    if (Auth::check()) {
+        Auth::logout();
+        $request->session()->invalidate();
+        return redirect(route('login'))->with('message', 'You have been logged out.');
+    } else {
+        return redirect(route('login'));
+    }
 })->name('logout');

@@ -20,14 +20,10 @@
     <div class="container-fluid overflow-auto">
         <div class="container">
             <h1 class="mt-3 mb-3">Two Factory Authentication</h1>
-            @if (session('status') == 'two-factor-authentication-enabled' || (!auth()->user()->two_factor_confirmed_at && auth()->user()->two_factor_secret))
+            @if (session('status') == 'two-factor-authentication-enabled' ||
+                    (!auth()->user()->two_factor_confirmed_at && auth()->user()->two_factor_secret))
                 <div class="alert alert-secondary" role="alert">
                     Please finish configuring two factor authentication below.
-                </div>
-            @endif
-            @if (sizeof($errors->getBag('confirmTwoFactorAuthentication')->get('code')) == 1)
-                <div class="alert alert-danger" role="alert">
-                    Wrong code.
                 </div>
             @endif
             @if (!auth()->user()->two_factor_confirmed_at && auth()->user()->two_factor_secret)
@@ -37,6 +33,11 @@
                 <p>{{ decrypt(auth()->user()->two_factor_secret) }}</p>
                 <form style="max-width: 300px;" action="/user/confirmed-two-factor-authentication" method="post">
                     @csrf
+                    @if (sizeof($errors->getBag('confirmTwoFactorAuthentication')->get('code')) == 1)
+                        <div class="alert alert-danger" role="alert">
+                            Wrong code.
+                        </div>
+                    @endif
                     <div class="form-floating mb-3">
                         <input type="text" name="code" class="form-control" id="floatingCode" placeholder="Code"
                             required>
@@ -73,7 +74,6 @@
             @elseif(!auth()->user()->two_factor_secret && !auth()->user()->two_factor_confirmed_at)
                 <form action="/user/two-factor-authentication" method="post">
                     @csrf
-
                     <button type="submit" class="btn btn-primary">Enable 2FA</button>
                 </form>
             @endif

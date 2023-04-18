@@ -1,10 +1,3 @@
-<?php
-$posts = DB::table('posts')
-    ->join('users', 'users.id', '=', 'posts.user_id')
-    ->select('posts.id', 'posts.title', 'posts.created', 'users.name')
-    ->orderBy('posts.id', 'asc')
-    ->paginate(20);
-?>
 <html>
 
 <head>
@@ -42,7 +35,7 @@ $posts = DB::table('posts')
                             <th>{{ $post->id }}</th>
                             <td>{{ $post->title }}</td>
                             <td>{{ $post->created }}</td>
-                            <td>{{ $post->name }}</td>
+                            <td>{{ $post->user->name }}</td>
                         </tr>
                     @endforeach
                 </tbody>

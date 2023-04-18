@@ -25,11 +25,6 @@
     <form class="form-signin w-100 m-auto" action="/user/confirm-password" method="POST">
         @csrf
         <h1 class="h3 mb-3 fw-normal">Please confirm your password</h1>
-        <div class="form-floating mb-3">
-            <input type="password" name="password" class="form-control" id="floatingPassword" placeholder="Password"
-                required>
-            <label for="floatingPassword">Password</label>
-        </div>
         @if (Session::has('message'))
             <div class="alert alert-primary" role="alert">
                 {{ Session::get('message') }}
@@ -40,6 +35,11 @@
                 Wrong password.
             </div>
         @enderror
+        <div class="form-floating mb-3">
+            <input type="password" name="password" class="form-control" id="floatingPassword" placeholder="Password"
+                required>
+            <label for="floatingPassword">Password</label>
+        </div>
         <button class="w-100 btn btn-lg btn-primary" type="submit">Verify</button>
     </form>
 </body>
